@@ -1,0 +1,6 @@
+# Java compiled class files
+*.class
+
+# File databases
+#users.txt
+#leaves.txt
