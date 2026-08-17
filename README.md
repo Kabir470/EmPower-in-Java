@@ -1,51 +1,89 @@
-# EmPower - Employee Management System
+# EmPower — Java Design Pattern-Driven Employee & Leave System
 
-EmPower is a robust, object-oriented console application built with **.NET 9** that allows you to manage employees, handle administration tasks, and process employee leave requests. 
+**EmPower** is a Java-based console application designed to demonstrate the real-world implementation of Gang of Four (GoF) software design patterns. It models an Enterprise Employee & Leave Management System, featuring multi-role security (Admin, HR, Employee, Intern), compensation rule processing, dynamic leave request workflows, and atomic file-backed data storage (`users.txt` and `leaves.txt`).
 
-This project was built to demonstrate core **C# Object-Oriented Programming (OOP)** concepts, including Inheritance, Abstract classes, Dependency Injection, and File-based Data Persistence.
+---
 
-## Features
+## 🚀 Key Features
 
-### Admin Panel
-* **Hire Employee:** Add new staff with specific roles (`Admin`, `HR`, `Employee`, `Intern`), departments, salaries, and positions.
-* **Fire Employee:** Remove staff using their Employee ID.
-* **List All Employees:** View the current database of all staff.
-* **View Employee Profile:** Look up specific staff details using their ID.
+### 🔑 Authentication
+* Password-protected login flow (`CheckPassword`) preventing unauthorized access.
 
-### Employee Panel
-* **View Profile:** View personal data securely using an Employee ID.
-* **Edit Profile:** *(Planned feature)*
-* **Apply For Leave:** Staff can submit leaves by providing start dates, end dates, and reasons.
-* **View My Leaves:** Look up the status (`Pending`, `Approved`, `Rejected`) of submitted leave applications.
+### 🛡️ Admin Operations Panel
+* **Hire Employee**: Dynamically create staff profiles (`Admin`, `HR`, `Employee`, `Intern`) via the **Factory Method** pattern.
+* **Fire Employee**: Remove staff from the system using Employee ID.
+* **List All Employees**: Print current employee records using the **Template Method** pattern.
+* **View Employee Profile**: Search and view detailed employee profiles and role-specific bonuses.
+* **Review & Update Leave Requests**: View pending employee leave applications and update status (`Pending`, `Approved`, `Rejected`).
 
-## Technologies Used
-* **C# / .NET 9.0**
-* Console User Interface
-* **Text-File Database System** (`users.txt`, `leaves.txt`) for persistent tracking even when the app is closed.
+### 👤 Employee Self-Service Panel
+* **View Profile**: Access personal employment details.
+* **Apply For Leave**: Submit leave requests with dynamic start/end dates and leave reasons.
+* **View My Leaves**: Track personal leave application statuses.
+* **Real-Time Observer Notifications**: Receive automatic notification alerts upon leave status changes.
 
-## Architecture
+---
 
-This application follows a highly separated **Ecosystem Design Pattern** to prevent tight-coupling and make future modifications easy.
+## 🏗️ Applied Design Patterns Architecture
 
-* **Models Layer (`Models/`, `Abstract/`):** Contains pure data structures such as `EmployeeBase` and `LeaveRequests`.
-* **Repository Layer (`Repository/`):** Controls all interactions with the database (reading/writing to the `.txt` files) keeping state centralized.
-* **Service Layer (`Services/`):** The logic and operation layer where business functionality executes.
-* **UI/Menu Layer (`MenuUI/`):** View handlers (like Waiters in a restaurant) that talk to the user and pass data strictly to the Service layer.
-* **Program.cs (`Manager`):** Utilizes **Dependency Injection** by building the Repositories and Services exactly once and passing their shared references down completely minimizing data de-sync.
+The application is structured into a 7-tier architecture powered by **8 Software Design Patterns**:
 
-## How to Run
-1. Ensure you have the **.NET 9 SDK** installed.
-2. Clone the repository to your local machine.
-3. Open a terminal to the workspace root directory.
-4. Run the application using the dotnet CLI:
-```sh
-dotnet run
+| Pattern | Category | Where Used | Architectural Benefit |
+| :--- | :--- | :--- | :--- |
+| **1. Singleton** | Creational | `EmployeeRepository`, `LeaveRepository` | Guarantees single-instance thread safety for text-file persistence (`users.txt`, `leaves.txt`). |
+| **2. Factory Method** | Creational | `EmployeeFactory` | Centralizes creation of role-based employee objects (`AdminMember`, `HrMember`, etc.). |
+| **3. Strategy** | Behavioral | `ISalaryStrategy` (`AdminSalaryStrategy`, etc.) | Decouples role-specific payroll allowance formulas from domain entity models. |
+| **4. Observer** | Behavioral | `ILeaveObserver`, `HRLeaveObserver` | Automatically dispatches notification alerts when leave request status changes. |
+| **5. Command** | Behavioral | `ICommand` (`HireEmployeeCommand`, etc.) | Encapsulates UI menu choices into executable objects, decoupling UI from services. |
+| **6. Facade** | Structural | `EmPowerFacade` | Hides complex subsystem setup, observer wiring, and authentication behind a clean startup method. |
+| **7. Template Method** | Behavioral | `EmployeeBase.PrintDetails()` | Enforces a uniform layout skeleton for displaying employee profile details. |
+| **8. Repository** | Data Access | `Repository/` package | Encapsulates text-file serialization and isolates persistence logic from services. |
+
+---
+
+## 📁 Project Directory Structure
+
 ```
-5. Follow the required login prompts. (See source code for standard/default passwords).
-
-## Building a Standalone Executable
-If you would like to distribute this application as a single `.exe` file without the user needing to install the .NET runtime:
-```sh
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+EmPower in java/
+├── Abstract/                  # Abstract base classes (EmployeeBase, LeaveRequestBase, CheckPassword)
+├── Command/                   # Command Pattern implementations (ICommand, HireEmployeeCommand, etc.)
+├── Facade/                    # Structural Facade entry point (EmPowerFacade)
+├── Factory/                   # Factory Method implementation (EmployeeFactory)
+├── Interfaces/                 # Common contract interfaces (IEmployee, ISalaryCalculation, etc.)
+├── Login/                     # Authentication view handler (LoginPage)
+├── MenuUI/                    # UI View Handlers (AdminMenuHandler, EmployeeMenuHandler)
+├── Models/                    # Concrete domain models (AdminMember, HrMember, Employee, InternEmployee, LeaveRequests)
+├── Observer/                  # Observer Pattern implementations (ILeaveObserver, HRLeaveObserver)
+├── Repository/                # Singleton Data Access Repositories (EmployeeRepository, LeaveRepository)
+├── Services/                  # Business logic services (EmployeeService, LeaveService, ProfileServices)
+├── Strategy/                  # Strategy Pattern implementations (ISalaryStrategy & Role Strategies)
+├── bin/                       # Compiled bytecode target directory (.class files)
+├── Program.java               # Clean 2-line Main Entry Point
+├── users.txt / leaves.txt     # Text-file persistence stores
+├── DESIGN_PATTERNS_GUIDE.md   # Comprehensive student learning guide & viva cheat sheet
+└── EmPower_Project_Report.docx # Official academic project report (Word document)
 ```
-You will find your ready-to-share executable inside the `bin/Release/net9.0/win-x64/publish/` folder.
+
+---
+
+## 🛠️ How to Build and Run
+
+### Prerequisites
+* **Java Development Kit (JDK 17 or Java 26)** installed and added to PATH.
+
+### 1. Compile into the `bin/` Directory
+```powershell
+javac -d bin Program.java Abstract/*.java Command/*.java Facade/*.java Factory/*.java Interfaces/*.java Login/*.java MenuUI/*.java Models/*.java Observer/*.java Repository/*.java Services/*.java Strategy/*.java
+```
+
+### 2. Run the Application
+```powershell
+java -cp bin Program
+```
+
+---
+
+## 📖 Documentation Artifacts
+
+- **[DESIGN_PATTERNS_GUIDE.md](DESIGN_PATTERNS_GUIDE.md)**: A student learning guide detailing pattern definitions, code snippets, trade-offs, and viva defense questions.
+- **[EmPower_Project_Report.docx](EmPower_Project_Report.docx)**: The official academic project report matching university lab standards.
