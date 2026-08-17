@@ -5,3 +5,7 @@ bin/
 *.class
 teacher instruction.md
 ~$Power_Project_Report.docx
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
