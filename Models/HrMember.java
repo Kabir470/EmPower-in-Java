@@ -2,15 +2,12 @@ package Models;
 
 import Abstract.EmployeeBase;
 import Interfaces.IDocumentAdminAccess;
+import Strategy.HrSalaryStrategy;
 
 public class HrMember extends EmployeeBase implements IDocumentAdminAccess {
     public HrMember(int id, String name, int salary, String department, String position) {
         super(id, name, salary, department, position);
-    }
-
-    @Override
-    public void CalculateSalary(int employeeID) {
-        System.out.println(" " + getName() + " salary: " + getSalary() + " + HR allowance: " + (getSalary() / 10));
+        this.salaryStrategy = new HrSalaryStrategy();
     }
 
     @Override

@@ -23,13 +23,27 @@ public class LeaveRequestBase {
     public void SubmitRequest(int employeeID) {
         int empId = employeeID;
         System.out.println("Employee ID: " + empId);
+        
         System.out.print("Start Date (yyyy-MM-dd): ");
-        LocalDate startDate = LocalDate.parse("2025-02-03");
-        System.out.print("\nEnd Date (yyyy-MM-dd): ");
-        LocalDate endDate = LocalDate.parse("2025-02-10");
-        System.out.print("\nReason for leave: ");
+        LocalDate startDate;
+        try {
+            startDate = LocalDate.parse(scanner.nextLine());
+        } catch (Exception e) {
+            System.out.println("Invalid date format! Setting start date to today.");
+            startDate = LocalDate.now();
+        }
+
+        System.out.print("End Date (yyyy-MM-dd): ");
+        LocalDate endDate;
+        try {
+            endDate = LocalDate.parse(scanner.nextLine());
+        } catch (Exception e) {
+            System.out.println("Invalid date format! Setting end date to 7 days from start date.");
+            endDate = startDate.plusDays(7);
+        }
+
+        System.out.print("Reason for leave: ");
         String reason = scanner.nextLine();
-        System.out.print("\nStatus (Pending/Approved/Rejected): ");
         String status = "Pending";
         leaveService.SubmitLeaveRequest(empId, startDate, endDate, reason, status);
     }

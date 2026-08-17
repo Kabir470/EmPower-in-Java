@@ -1,10 +1,7 @@
 package Services;
 
 import Abstract.EmployeeBase;
-import Models.AdminMember;
-import Models.Employee;
-import Models.HrMember;
-import Models.InternEmployee;
+import Factory.EmployeeFactory;
 import Repository.EmployeeRepository;
 
 import java.util.List;
@@ -17,18 +14,12 @@ public class EmployeeService {
     }
 
     public EmployeeService() {
+        this.repo = EmployeeRepository.getInstance();
     }
 
     public void HireEmployee(String role, String name, int salary, String dept, String pos) {
         int id = repo.GenerateID();
-
-        EmployeeBase emp = switch (role != null ? role : "") {
-            case "Admin" -> new AdminMember(id, name, salary, dept, pos);
-            case "HR" -> new HrMember(id, name, salary, dept, pos);
-            case "Employee" -> new Employee(id, name, salary, dept, pos);
-            case "Intern" -> new InternEmployee(id, name, salary, dept, pos);
-            default -> null;
-        };
+        EmployeeBase emp = EmployeeFactory.CreateEmployee(role, id, name, salary, dept, pos);
 
         if (emp == null) {
             System.out.println(" Invalid role!");

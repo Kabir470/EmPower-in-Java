@@ -2,15 +2,12 @@ package Models;
 
 import Abstract.EmployeeBase;
 import Interfaces.IDocumentAdminAccess;
+import Strategy.AdminSalaryStrategy;
 
 public class AdminMember extends EmployeeBase implements IDocumentAdminAccess {
     public AdminMember(int id, String name, int salary, String department, String position) {
         super(id, name, salary, department, position);
-    }
-
-    @Override
-    public void CalculateSalary(int employeeID) {
-        System.out.println(" " + getName() + " salary: " + getSalary() + " + Admin allowance: " + (getSalary() / 5));
+        this.salaryStrategy = new AdminSalaryStrategy();
     }
 
     @Override

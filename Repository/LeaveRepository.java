@@ -1,6 +1,7 @@
 package Repository;
 
 import Models.LeaveRequests;
+import Observer.ILeaveObserver;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,19 +12,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LeaveRepository {
+    private static LeaveRepository instance;
     private List<LeaveRequests> leaveRequests = new ArrayList<>();
+    private List<ILeaveObserver> observers = new ArrayList<>();
     private int nextLeaveId = 1;
     private final String filePath = "leaves.txt";
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public LeaveRepository() {
+    private LeaveRepository() {
         LoadData();
+    }
+
+    public static synchronized LeaveRepository getInstance() {
+        if (instance == null) {
+            instance = new LeaveRepository();
+        }
+        return instance;
+    }
+
+    public void AddObserver(ILeaveObserver observer) {
+        if (observer != null && !observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    public void NotifyObservers(LeaveRequests leave) {
+        for (ILeaveObserver observer : observers) {
+            observer.OnLeaveStatusChanged(leave);
+        }
     }
 
     public void AddLeaveRequest(LeaveRequests leave) {
         leaveRequests.add(leave);
         SaveData();
         System.out.println("Leave request added successfully with ID: " + leave.getLeaveID());
+        NotifyObservers(leave);
     }
 
     public void UpdateLeaveStatus(int leaveId, String newStatus) {
@@ -32,6 +55,7 @@ public class LeaveRepository {
             leave.setStatus(newStatus);
             SaveData();
             System.out.println("Leave request ID " + leaveId + " status updated to " + newStatus);
+            NotifyObservers(leave);
         } else {
             System.out.println("Leave request with ID " + leaveId + " not found.");
         }

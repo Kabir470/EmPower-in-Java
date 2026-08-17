@@ -1,10 +1,7 @@
 package Repository;
 
 import Abstract.EmployeeBase;
-import Models.AdminMember;
-import Models.Employee;
-import Models.HrMember;
-import Models.InternEmployee;
+import Factory.EmployeeFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,12 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeRepository {
-    public List<EmployeeBase> employees = new ArrayList<>();
+    private static EmployeeRepository instance;
+    private List<EmployeeBase> employees = new ArrayList<>();
     private int nextId = 1;
     private final String filePath = "users.txt";
 
-    public EmployeeRepository() {
+    private EmployeeRepository() {
         LoadData();
+    }
+
+    public static synchronized EmployeeRepository getInstance() {
+        if (instance == null) {
+            instance = new EmployeeRepository();
+        }
+        return instance;
     }
 
     public void AddEmployee(EmployeeBase emp) {
@@ -83,13 +88,7 @@ public class EmployeeRepository {
                     String dept = parts[4];
                     String pos = parts[5];
 
-                    EmployeeBase emp = switch (roleType) {
-                        case "AdminMember" -> new AdminMember(id, name, salary, dept, pos);
-                        case "HrMember" -> new HrMember(id, name, salary, dept, pos);
-                        case "Employee" -> new Employee(id, name, salary, dept, pos);
-                        case "InternEmployee" -> new InternEmployee(id, name, salary, dept, pos);
-                        default -> null;
-                    };
+                    EmployeeBase emp = EmployeeFactory.CreateEmployee(roleType, id, name, salary, dept, pos);
 
                     if (emp != null) {
                         employees.add(emp);

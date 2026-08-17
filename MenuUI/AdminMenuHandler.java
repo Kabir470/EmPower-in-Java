@@ -2,6 +2,11 @@ package MenuUI;
 
 import Abstract.HireFireBase;
 import Abstract.LeaveRequestBase;
+import Command.ICommand;
+import Command.HireEmployeeCommand;
+import Command.FireEmployeeCommand;
+import Command.ListEmployeesCommand;
+import Command.UpdateLeaveStatusCommand;
 import Services.EmployeeService;
 
 import java.util.Scanner;
@@ -48,16 +53,21 @@ public class AdminMenuHandler {
             System.out.print("Choose: ");
 
             String choice = scanner.nextLine();
+            ICommand command = null;
 
             switch (choice) {
-                case "1" -> hirefire.HireMenu();
-                case "2" -> hirefire.FireMenu();
-                case "3" -> empService.ListAll();
+                case "1" -> command = new HireEmployeeCommand(hirefire);
+                case "2" -> command = new FireEmployeeCommand(hirefire);
+                case "3" -> command = new ListEmployeesCommand(empService);
                 case "4" -> ViewProfileMenu();
                 case "5" -> EnterIdForLeaveDetails();
-                case "6" -> leaveRequestBase.UpdateLeaveStatus();
+                case "6" -> command = new UpdateLeaveStatusCommand(leaveRequestBase);
                 case "7" -> { return; }
                 default -> System.out.println(" Invalid choice!");
+            }
+
+            if (command != null) {
+                command.Execute();
             }
         }
     }

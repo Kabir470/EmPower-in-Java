@@ -1,6 +1,9 @@
 package MenuUI;
 
 import Abstract.LeaveRequestBase;
+import Command.ICommand;
+import Command.SubmitLeaveCommand;
+import Command.ViewProfileCommand;
 import Services.EmployeeProfileServices;
 
 import java.util.Scanner;
@@ -34,13 +37,18 @@ public class EmployeeMenuHandler {
             System.out.print("Choose: ");
 
             String choice = scanner.nextLine();
+            ICommand command = null;
 
             switch (choice) {
-                case "1" -> employeeProfileServices.ViewProfile(eID);
-                case "4" -> leaveRequestBase.SubmitRequest(eID);
+                case "1" -> command = new ViewProfileCommand(employeeProfileServices, eID);
+                case "4" -> command = new SubmitLeaveCommand(leaveRequestBase, eID);
                 case "5" -> leaveRequestBase.ViewLeaveDetails(eID);
                 case "6" -> { return; }
                 default -> System.out.println(" Invalid choice!");
+            }
+
+            if (command != null) {
+                command.Execute();
             }
         }
     }

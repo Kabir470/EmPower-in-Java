@@ -1,6 +1,7 @@
+# Output directory for compiled class files
+bin/
+
 # Java compiled class files
 *.class
-
-# File databases
-#users.txt
-#leaves.txt
+teacher instruction.md
+~$Power_Project_Report.docx

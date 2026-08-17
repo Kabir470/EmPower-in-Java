@@ -2,6 +2,7 @@ package Abstract;
 
 import Interfaces.IEmployee;
 import Interfaces.ISalaryCalculation;
+import Strategy.ISalaryStrategy;
 
 public abstract class EmployeeBase implements IEmployee, ISalaryCalculation {
     private int employeeID;
@@ -9,6 +10,7 @@ public abstract class EmployeeBase implements IEmployee, ISalaryCalculation {
     private int salary;
     private String department;
     private String position;
+    protected ISalaryStrategy salaryStrategy;
 
     @Override
     public int getEmployeeID() {
@@ -66,6 +68,14 @@ public abstract class EmployeeBase implements IEmployee, ISalaryCalculation {
         this.position = position;
     }
 
+    public ISalaryStrategy getSalaryStrategy() {
+        return salaryStrategy;
+    }
+
+    public void setSalaryStrategy(ISalaryStrategy salaryStrategy) {
+        this.salaryStrategy = salaryStrategy;
+    }
+
     public EmployeeBase(int id, String name, int salary, String department, String position) {
         setEmployeeID(id);
         setName(name);
@@ -100,7 +110,11 @@ public abstract class EmployeeBase implements IEmployee, ISalaryCalculation {
     }
 
     @Override
-    public abstract void CalculateSalary(int employeeID);
+    public void CalculateSalary(int employeeID) {
+        if (salaryStrategy != null) {
+            salaryStrategy.CalculateSalary(getName(), getSalary());
+        }
+    }
 
     @Override
     public abstract String GetRole();
