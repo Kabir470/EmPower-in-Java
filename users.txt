@@ -1,1 +1,2 @@
 AdminMember|1|kabir|343232|cse|hr
+HrMember|2|aliur|30000|HR|senior executive

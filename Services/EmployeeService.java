@@ -19,7 +19,7 @@ public class EmployeeService {
 
     public void HireEmployee(String role, String name, int salary, String dept, String pos) {
         int id = repo.GenerateID();
-        EmployeeBase emp = EmployeeFactory.CreateEmployee(role, id, name, salary, dept, pos);
+        EmployeeBase emp = EmployeeFactory.Create(role, id, name, salary, dept, pos);
 
         if (emp == null) {
             System.out.println(" Invalid role!");

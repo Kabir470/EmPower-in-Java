@@ -88,7 +88,7 @@ public class EmployeeRepository {
                     String dept = parts[4];
                     String pos = parts[5];
 
-                    EmployeeBase emp = EmployeeFactory.CreateEmployee(roleType, id, name, salary, dept, pos);
+                    EmployeeBase emp = EmployeeFactory.Create(roleType, id, name, salary, dept, pos);
 
                     if (emp != null) {
                         employees.add(emp);

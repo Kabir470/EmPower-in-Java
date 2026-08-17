@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmPower — Employee & Leave Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-card-hover: rgba(51, 65, 85, 0.8);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-primary: #6366f1;
+            --accent-primary-hover: #4f46e5;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-cyan: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Header Navigation */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-cyan));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn.active {
+            color: var(--text-main);
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        /* Container */
+        main {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Views Layout */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Action Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 360px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Employee Grid Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.25 ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-id {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .role-admin { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); }
+        .role-hr { background: rgba(245, 158, 11, 0.15); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .role-employee { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .role-intern { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.15);
+            color: #fda4af;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 63, 94, 0.3);
+        }
+
+        /* Leave Requests Table */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-approved { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .status-rejected { background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        .select-status {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Observer Console Terminal */
+        .terminal-container {
+            background: #020617;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.25rem;
+            font-family: var(--font-mono);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+            margin-top: 1.5rem;
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .terminal-title {
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .terminal-logs {
+            height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .log-entry {
+            line-height: 1.4;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .log-time { color: var(--text-muted); }
+        .log-tag { color: var(--accent-amber); font-weight: 600; }
+        .log-msg { color: var(--text-main); }
+
+        /* Modal Dialog */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Design Patterns Visualizer Cards */
+        .pattern-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pattern-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .pattern-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .pattern-type {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .pattern-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .pattern-code {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            background: #020617;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            color: #6ee7b7;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">E</div>
+            <div class="logo-text">
+                <h1>EmPower</h1>
+                <p>Employee & Leave System</p>
+            </div>
+        </div>
+        <nav>
+            <button class="nav-btn active" onclick="switchView('employees')">
+                <span>👥</span> Employees
+            </button>
+            <button class="nav-btn" onclick="switchView('leaves')">
+                <span>📋</span> Leave Applications
+            </button>
+            <button class="nav-btn" onclick="switchView('patterns')">
+                <span>🧩</span> 8 Design Patterns
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- VIEW 1: EMPLOYEES HUB -->
+        <section id="employees-view" class="view-section active">
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="emp-search" class="search-input" placeholder="Search by name, role or dept..." onkeyup="filterEmployees()">
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn-secondary" onclick="exportData('users')">📥 Export users.txt</button>
+                    <button class="btn-primary" onclick="openModal('hire-modal')">➕ Hire Employee</button>
+                </div>
+            </div>
+
+            <div class="cards-grid" id="employees-grid">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: LEAVE APPLICATIONS & OBSERVER CONSOLE -->
+        <section id="leaves-view" class="view-section">
+            <div class="toolbar">
+                <h2 style="font-size: 1.25rem;">Leave Request Management</h2>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn-secondary" onclick="exportData('leaves')">📥 Export leaves.txt</button>
+                    <button class="btn-primary" onclick="openModal('leave-modal')">📝 Apply For Leave</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Leave ID</th>
+                            <th>Employee ID</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaves-tbody">
+                        <!-- Dynamically populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Real-Time Observer Log Window -->
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <div class="terminal-title">
+                        <span>📡</span> HRLeaveObserver Notification Terminal (Real-Time Pattern Logs)
+                    </div>
+                    <button style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.75rem;" onclick="clearLogs()">Clear Console</button>
+                </div>
+                <div class="terminal-logs" id="terminal-logs">
+                    <div class="log-entry">
+                        <span class="log-time">[System Init]</span> <span class="log-tag">[HRLeaveObserver]</span> <span class="log-msg">Subscribed to LeaveRepository updates. System ready.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: 8 DESIGN PATTERNS VISUALIZER -->
+        <section id="patterns-view" class="view-section">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Applied Gang of Four (GoF) Design Patterns</h2>
+            <div id="patterns-list">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL 1: HIRE EMPLOYEE -->
+    <div class="modal-overlay" id="hire-modal">
+        <div class="modal">
+            <h3 class="modal-title">Hire Employee (Factory Method)</h3>
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="hire-name" class="form-input" placeholder="e.g. Sarah Connor">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <select id="hire-role" class="form-select">
+                    <option value="Admin">AdminMember (Admin Allowance Strategy)</option>
+                    <option value="HR">HrMember (HR Allowance Strategy)</option>
+                    <option value="Employee" selected>Employee (Standard Salary Strategy)</option>
+                    <option value="Intern">InternEmployee (Stipend Strategy)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Base Salary ($)</label>
+                <input type="number" id="hire-salary" class="form-input" value="50000">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Department</label>
+                <input type="text" id="hire-dept" class="form-input" value="Engineering">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Position</label>
+                <input type="text" id="hire-pos" class="form-input" value="Developer">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('hire-modal')">Cancel</button>
+                <button class="btn-primary" onclick="submitHire()">Create Employee</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: APPLY FOR LEAVE -->
+    <div class="modal-overlay" id="leave-modal">
+        <div class="modal">
+            <h3 class="modal-title">Submit Leave Request (Command Pattern)</h3>
+            <div class="form-group">
+                <label class="form-label">Employee ID</label>
+                <select id="leave-emp-id" class="form-select"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input type="date" id="leave-start" class="form-input" value="2026-08-20">
+            </div>
+            <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input type="date" id="leave-end" class="form-input" value="2026-08-27">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Reason</label>
+                <input type="text" id="leave-reason" class="form-input" placeholder="e.g. Annual Medical Checkup">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('leave-modal')">Cancel</button>
+                <button class="btn-primary" onclick="submitLeave()">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // State initialized from Java backend users.txt and leaves.txt default structures
+        let employees = [
+            { id: 1, name: "Alice Johnson", role: "AdminMember", salary: 85000, dept: "Management", pos: "System Lead" },
+            { id: 2, name: "Bob Smith", role: "HrMember", salary: 62000, dept: "Human Resources", pos: "HR Manager" },
+            { id: 3, name: "Charlie Brown", role: "Employee", salary: 55000, dept: "Engineering", pos: "Software Engineer" },
+            { id: 4, name: "Diana Prince", role: "InternEmployee", salary: 25000, dept: "QA", pos: "QA Intern" }
+        ];
+
+        let leaves = [
+            { leaveID: 1, employeeID: 3, startDate: "2026-08-20", endDate: "2026-08-27", reason: "Vacation", status: "Pending" },
+            { leaveID: 2, employeeID: 4, startDate: "2026-09-01", endDate: "2026-09-05", reason: "University Exam", status: "Approved" }
+        ];
+
+        let nextEmpId = 5;
+        let nextLeaveId = 3;
+
+        // Design Patterns Guide Data
+        const patternsData = [
+            {
+                name: "1. Template Method Pattern",
+                type: "Behavioral Pattern",
+                desc: "EmployeeBase defines the fixed detail-printing algorithm skeleton (PrintDetails()), deferring role resolution (GetRole()) to subclass implementations.",
+                code: "EmployeeBase.java: PrintDetails() calls abstract GetRole()"
+            },
+            {
+                name: "2. Singleton Pattern",
+                type: "Creational Pattern",
+                desc: "EmployeeRepository & LeaveRepository enforce private constructors and static getInstance() access to guarantee single-instance thread safety for users.txt and leaves.txt storage.",
+                code: "EmployeeRepository.java: getInstance() with private constructor"
+            },
+            {
+                name: "3. Factory Method Pattern",
+                type: "Creational Pattern",
+                desc: "Abstract EmployeeFactory and concrete factories (AdminEmployeeFactory, HrEmployeeFactory, etc.) override CreateEmployee() to instantiate specific employee models.",
+                code: "Factory/EmployeeFactory.java: Abstract creator hierarchy"
+            },
+            {
+                name: "4. Strategy Pattern",
+                type: "Behavioral Pattern",
+                desc: "ISalaryStrategy interface and role strategies (AdminSalaryStrategy, HrSalaryStrategy, etc.) decouple compensation rules from entity models.",
+                code: "Strategy/ISalaryStrategy.java: CalculateSalary(name, salary)"
+            },
+            {
+                name: "5. Observer Pattern",
+                type: "Behavioral Pattern",
+                desc: "LeaveRepository notifies registered ILeaveObserver instances (such as HRLeaveObserver) automatically when leave request status changes.",
+                code: "Observer/ILeaveObserver.java & HRLeaveObserver.java"
+            },
+            {
+                name: "6. Command Pattern",
+                type: "Behavioral Pattern",
+                desc: "ICommand interface and command classes (HireEmployeeCommand, SubmitLeaveCommand, etc.) encapsulate UI menu choices into executable objects.",
+                code: "Command/ICommand.java: Execute() method"
+            },
+            {
+                name: "7. Facade Pattern",
+                type: "Structural Pattern",
+                desc: "EmPowerFacade encapsulates complex subsystem initialization, repository setup, service wiring, and observer registration into a simple StartSystem() call.",
+                code: "Facade/EmPowerFacade.java: Unified application entry point"
+            },
+            {
+                name: "8. Repository Pattern",
+                type: "Data Access Pattern",
+                desc: "EmployeeRepository and LeaveRepository isolate text-file persistence (users.txt, leaves.txt) from business service layers.",
+                code: "Repository/EmployeeRepository.java & LeaveRepository.java"
+            }
+        ];
+
+        // Init
+        document.addEventListener("DOMContentLoaded", () => {
+            renderEmployees();
+            renderLeaves();
+            renderPatterns();
+            populateEmpSelect();
+        });
+
+        // View Navigation
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`${viewName}-view`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Render Employees Grid
+        function renderEmployees(filterText = '') {
+            const grid = document.getElementById('employees-grid');
+            grid.innerHTML = '';
+
+            const filtered = employees.filter(e => 
+                e.name.toLowerCase().includes(filterText.toLowerCase()) ||
+                e.role.toLowerCase().includes(filterText.toLowerCase()) ||
+                e.dept.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">No employees found matching filter.</div>`;
+                return;
+            }
+
+            filtered.forEach(e => {
+                let roleClass = 'role-employee';
+                let roleLabel = 'Employee';
+                let bonus = e.salary / 10;
+                let allowanceText = 'Standard Bonus (10%)';
+
+                if (e.role.includes('Admin')) {
+                    roleClass = 'role-admin';
+                    roleLabel = 'Admin';
+                    allowanceText = 'Admin Allowance (+20%)';
+                } else if (e.role.includes('Hr')) {
+                    roleClass = 'role-hr';
+                    roleLabel = 'HR';
+                    allowanceText = 'HR Allowance (+10%)';
+                } else if (e.role.includes('Intern')) {
+                    roleClass = 'role-intern';
+                    roleLabel = 'Intern';
+                    allowanceText = 'Fixed Stipend Strategy';
+                }
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-id">ID: #${e.id}</span>
+                        <span class="role-badge ${roleClass}">${roleLabel}</span>
+                    </div>
+                    <div class="card-title">${e.name}</div>
+                    <div class="card-subtitle">${e.pos} • ${e.dept}</div>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span>Base Salary:</span>
+                            <span class="info-value">$${e.salary.toLocaleString()}</span>
+                        </div>
+                        <div class="info-item">
+                            <span>Strategy Calculation:</span>
+                            <span class="info-value" style="color: var(--accent-cyan);">${allowanceText}</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-danger" onclick="fireEmployee(${e.id})">Fire Employee</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterEmployees() {
+            const query = document.getElementById('emp-search').value;
+            renderEmployees(query);
+        }
+
+        // Hire Employee (Factory Method Simulation)
+        function submitHire() {
+            const name = document.getElementById('hire-name').value.trim();
+            const role = document.getElementById('hire-role').value;
+            const salary = parseInt(document.getElementById('hire-salary').value) || 30000;
+            const dept = document.getElementById('hire-dept').value.trim() || 'General';
+            const pos = document.getElementById('hire-pos').value.trim() || 'Staff';
+
+            if (!name) {
+                alert('Please enter a valid employee name.');
+                return;
+            }
+
+            const roleClassMap = {
+                'Admin': 'AdminMember',
+                'HR': 'HrMember',
+                'Employee': 'Employee',
+                'Intern': 'InternEmployee'
+            };
+
+            const newEmp = {
+                id: nextEmpId++,
+                name: name,
+                role: roleClassMap[role] || 'Employee',
+                salary: salary,
+                dept: dept,
+                pos: pos
+            };
+
+            employees.push(newEmp);
+            renderEmployees();
+            populateEmpSelect();
+            closeModal('hire-modal');
+            logObserver(`Factory Method created new ${newEmp.role} instance for #${newEmp.id} ${newEmp.name}`);
+        }
+
+        function fireEmployee(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp) return;
+
+            if (confirm(`Are you sure you want to fire ${emp.name}?`)) {
+                employees = employees.filter(e => e.id !== id);
+                renderEmployees();
+                populateEmpSelect();
+                logObserver(`Employee #${id} (${emp.name}) removed from Singleton repository.`);
+            }
+        }
+
+        // Render Leaves Table
+        function renderLeaves() {
+            const tbody = document.getElementById('leaves-tbody');
+            tbody.innerHTML = '';
+
+            leaves.forEach(l => {
+                let statusClass = 'status-pending';
+                if (l.status === 'Approved') statusClass = 'status-approved';
+                if (l.status === 'Rejected') statusClass = 'status-rejected';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family: var(--font-mono); font-weight: 600;">#L${l.leaveID}</td>
+                    <td>Employee #${l.employeeID}</td>
+                    <td>${l.startDate}</td>
+                    <td>${l.endDate}</td>
+                    <td>${l.reason}</td>
+                    <td><span class="status-badge ${statusClass}">${l.status}</span></td>
+                    <td>
+                        <select class="select-status" onchange="updateLeaveStatus(${l.leaveID}, this.value)">
+                            <option value="Pending" ${l.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Approved" ${l.status === 'Approved' ? 'selected' : ''}>Approve</option>
+                            <option value="Rejected" ${l.status === 'Rejected' ? 'selected' : ''}>Reject</option>
+                        </select>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateLeaveStatus(leaveId, newStatus) {
+            const leave = leaves.find(l => l.leaveID === leaveId);
+            if (!leave) return;
+
+            leave.status = newStatus;
+            renderLeaves();
+            
+            // Trigger Observer Notification
+            logObserver(`[ALERT] HRLeaveObserver notified: Leave ID #${leaveId} for Employee #${leave.employeeID} changed to '${newStatus}'`);
+        }
+
+        function submitLeave() {
+            const empId = parseInt(document.getElementById('leave-emp-id').value);
+            const start = document.getElementById('leave-start').value;
+            const end = document.getElementById('leave-end').value;
+            const reason = document.getElementById('leave-reason').value.trim() || 'Personal Reasons';
+
+            const newLeave = {
+                leaveID: nextLeaveId++,
+                employeeID: empId,
+                startDate: start,
+                endDate: end,
+                reason: reason,
+                status: 'Pending'
+            };
+
+            leaves.push(newLeave);
+            renderLeaves();
+            closeModal('leave-modal');
+            logObserver(`[NEW REQUEST] Leave ID #${newLeave.leaveID} submitted by Employee #${empId}. Initial status: Pending.`);
+        }
+
+        function populateEmpSelect() {
+            const select = document.getElementById('leave-emp-id');
+            select.innerHTML = '';
+            employees.forEach(e => {
+                const opt = document.createElement('option');
+                opt.value = e.id;
+                opt.textContent = `#${e.id} - ${e.name} (${e.pos})`;
+                select.appendChild(opt);
+            });
+        }
+
+        // Observer Logging System
+        function logObserver(message) {
+            const container = document.getElementById('terminal-logs');
+            const time = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-tag">[HRLeaveObserver]</span> <span class="log-msg">${message}</span>`;
+            
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('terminal-logs').innerHTML = '';
+        }
+
+        // Render Patterns
+        function renderPatterns() {
+            const list = document.getElementById('patterns-list');
+            list.innerHTML = '';
+
+            patternsData.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'pattern-card';
+                item.innerHTML = `
+                    <div class="pattern-header">
+                        <div class="pattern-name">${p.name}</div>
+                        <div class="pattern-type">${p.type}</div>
+                    </div>
+                    <div class="pattern-desc">${p.desc}</div>
+                    <div class="pattern-code">📍 Implementation Location: ${p.code}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Export Data Simulation
+        function exportData(type) {
+            let content = '';
+            if (type === 'users') {
+                content = employees.map(e => `${e.role}|${e.id}|${e.name}|${e.salary}|${e.dept}|${e.pos}`).join('\n');
+            } else {
+                content = leaves.map(l => `${l.leaveID}|${l.employeeID}|${l.startDate}|${l.endDate}|${l.reason}|${l.status}`).join('\n');
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${type}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            logObserver(`Exported persistence file ${type}.txt successfully.`);
+        }
+
+        // Modal Helpers
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+</body>
+</html>

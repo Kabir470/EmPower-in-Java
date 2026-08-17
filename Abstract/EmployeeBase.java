@@ -97,6 +97,7 @@ public abstract class EmployeeBase implements IEmployee, ISalaryCalculation {
         System.out.println(getName() + " clocked out.");
     }
 
+    // template method is used here
     public void PrintDetails() {
         System.out.println("------------------------------");
         System.out.println("Employee ID: " + getEmployeeID());

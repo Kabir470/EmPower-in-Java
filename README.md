@@ -57,6 +57,7 @@ EmPower in java/
 ├── Repository/                # Singleton Data Access Repositories (EmployeeRepository, LeaveRepository)
 ├── Services/                  # Business logic services (EmployeeService, LeaveService, ProfileServices)
 ├── Strategy/                  # Strategy Pattern implementations (ISalaryStrategy & Role Strategies)
+├── index.html                 # Standalone single-file HTML/CSS/JS Web Dashboard
 ├── bin/                       # Compiled bytecode target directory (.class files)
 ├── Program.java               # Clean 2-line Main Entry Point
 ├── users.txt / leaves.txt     # Text-file persistence stores

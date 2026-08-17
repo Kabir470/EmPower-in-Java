@@ -43,20 +43,21 @@ Use this guide to study the architecture, understand the design decisions, and p
 
 ---
 
-### 2. Factory Method Pattern
+### 2. Factory Method Pattern (GoF Classic)
 
 - **Category**: Creational
 - **Where in Code**: 
-  - [EmployeeFactory.java](file:///d:/code/EmPower%20in%20java/Factory/EmployeeFactory.java)
-  - Invoked in [EmployeeService.java](file:///d:/code/EmPower%20in%20java/Services/EmployeeService.java#L26-L36) & [EmployeeRepository.java](file:///d:/code/EmPower%20in%20java/Repository/EmployeeRepository.java#L80-L88)
+  - Abstract Creator: [EmployeeFactory.java](file:///d:/code/EmPower%20in%20java/Factory/EmployeeFactory.java)
+  - Concrete Factories: [AdminEmployeeFactory.java](file:///d:/code/EmPower%20in%20java/Factory/AdminEmployeeFactory.java), [HrEmployeeFactory.java](file:///d:/code/EmPower%20in%20java/Factory/HrEmployeeFactory.java), [StandardEmployeeFactory.java](file:///d:/code/EmPower%20in%20java/Factory/StandardEmployeeFactory.java), [InternEmployeeFactory.java](file:///d:/code/EmPower%20in%20java/Factory/InternEmployeeFactory.java)
 - **Why it was used**:
-  Instantiating different employee types (`AdminMember`, `HrMember`, `Employee`, `InternEmployee`) requires selecting the correct subclass based on user input or file text (`"Admin"`, `"HR"`, etc.). Factory Method centralizes this logic so adding new employee types in the future does not require modifying service or repository code (adhering to the **Open-Closed Principle**).
+  Instantiating different employee types (`AdminMember`, `HrMember`, `Employee`, `InternEmployee`) requires a dedicated creator hierarchy. The abstract `EmployeeFactory` class defines the `CreateEmployee()` interface, and each concrete factory overrides it to instantiate its respective model.
 - **How it Works**:
-  - `EmployeeFactory.CreateEmployee(role, id, name, salary, dept, pos)` accepts role strings and parameters.
-  - Uses Java switch expressions to return the matching `EmployeeBase` subclass.
+  - `EmployeeFactory` is an abstract class with `public abstract EmployeeBase CreateEmployee(...)`.
+  - Concrete creators override `CreateEmployee(...)` returning new instances of their respective model class.
+  - A static lookup helper `EmployeeFactory.Create(role, ...)` maps role strings to factory instances for seamless instantiation.
 - **Alternatives & Comparison**:
-  - *Alternative 1: Direct `new` statements scattered across services & repos*. Violates DRY (Don't Repeat Yourself) and makes adding a new employee type hard.
-  - *Alternative 2: Abstract Factory Pattern*. Used when creating families of related objects (e.g. `AdminFactory`, `HRFactory`). Unnecessary here because we only construct employee hierarchy items.
+  - *Alternative 1: Parameterized Simple Factory*. Uses a single `switch` statement in one factory class. Simple, but requires modifying the factory when adding new roles.
+  - *Alternative 2: Abstract Factory Pattern*. Used when creating families of related objects (e.g., UI widgets or OS drivers). Unnecessary here since we only construct employee entities.
 
 ---
 
